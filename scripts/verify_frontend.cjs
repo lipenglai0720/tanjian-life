@@ -1,6 +1,6 @@
 /* Run with Node.js. Compiles the real Vue templates without contacting business services. */
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
-const root=path.resolve(__dirname,'../AI-dianping-frontend/html/hmdp');
+const root=path.resolve(__dirname,'../frontend/html/tanjian');
 const messages=[];
 const context={module:{exports:{}},exports:{},console:{warn:(...x)=>messages.push(x.join(' ')),error:(...x)=>messages.push(x.join(' ')),log:()=>{}},
   setTimeout,clearTimeout,document:{createElement(){return {set innerHTML(s){this.textContent=s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'");}};}}};

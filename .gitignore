@@ -1,16 +1,16 @@
 # IDE
 # Ignore IntelliJ IDEA project files
 /.idea/
-/AI-dianping-backend/.idea/
+/backend/.idea/
 
 # Build output
 # Ignore Maven build output directory
-/AI-dianping-backend/target/
+/backend/target/
 
 # NGINX runtime files
 # Ignore NGINX logs, temp files and the executable
-/AI-dianping-frontend/logs/
-/AI-dianping-frontend/temp/
+/frontend/logs/
+/frontend/temp/
 
 # OS generated files
 .DS_Store
@@ -25,13 +25,13 @@ Thumbs.db
 .env
 .env.*
 !.env.example
-/AI-dianping-backend/src/main/resources/application.yml
+/backend/src/main/resources/application.yml
 
 # Local backups, generated screenshots, logs and uploaded files
 /.codex-backups/
 /artifacts/
 /upload/
-/AI-dianping-backend/upload/
+/backend/upload/
 *.log
 .vscode/
 .agents/

@@ -43,9 +43,9 @@ AI Skills 读取技能定义、校验表单、渲染提示模板、调用模型�
 
 | 入口 | 职责 |
 | --- | --- |
-| [VoucherOrderServiceImpl](../AI-dianping-backend/src/main/java/com/hmdp/service/impl/VoucherOrderServiceImpl.java) | Lua、Stream 消费、恢复与结果查询 |
-| [VoucherOrderProcessor](../AI-dianping-backend/src/main/java/com/hmdp/service/VoucherOrderProcessor.java) | 锁、事务、库存与幂等订单落库 |
-| [ReservationServiceImpl](../AI-dianping-backend/src/main/java/com/hmdp/service/impl/ReservationServiceImpl.java) | 预约状态与归属校验 |
-| [AiSkillServiceImpl](../AI-dianping-backend/src/main/java/com/hmdp/service/impl/AiSkillServiceImpl.java) | 场景技能与生成记录 |
-| [McpServerConfig](../AI-dianping-backend/src/main/java/com/hmdp/mcp/config/McpServerConfig.java) | MCP HTTP 服务与身份上下文 |
-| [前端功能对照](../AI-dianping-frontend/FEATURE-COVERAGE.md) | 页面入口与后端能力 |
+| [VoucherOrderServiceImpl](../backend/src/main/java/com/tanjian/service/impl/VoucherOrderServiceImpl.java) | Lua、Stream 消费、恢复与结果查询 |
+| [VoucherOrderProcessor](../backend/src/main/java/com/tanjian/service/VoucherOrderProcessor.java) | 锁、事务、库存与幂等订单落库 |
+| [ReservationServiceImpl](../backend/src/main/java/com/tanjian/service/impl/ReservationServiceImpl.java) | 预约状态与归属校验 |
+| [AiSkillServiceImpl](../backend/src/main/java/com/tanjian/service/impl/AiSkillServiceImpl.java) | 场景技能与生成记录 |
+| [McpServerConfig](../backend/src/main/java/com/tanjian/mcp/config/McpServerConfig.java) | MCP HTTP 服务与身份上下文 |
+| [前端功能对照](../frontend/FEATURE-COVERAGE.md) | 页面入口与后端能力 |

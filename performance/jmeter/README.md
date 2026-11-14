@@ -27,30 +27,30 @@
 以下命令使用 Windows CMD 语法，不是 PowerShell：
 
 ~~~cmd
-cd /d D:\hmdp-Java
+cd /d D:\tanjian-life
 set "JAVA_HOME=D:\biyeshejixuexi\e_software\Java_jdk\jdk-17.0.13"
-set "HMDP_JMETER=D:\BaiduNetdiskDownload\apache-jmeter-5.6.3\bin\jmeter.bat"
-set "HMDP_PY=D:\miniconda3\python.exe"
+set "TANJIAN_JMETER=D:\BaiduNetdiskDownload\apache-jmeter-5.6.3\bin\jmeter.bat"
+set "TANJIAN_PY=D:\miniconda3\python.exe"
 if not exist performance\jmeter\results mkdir performance\jmeter\results
 ~~~
 
 先编译最新后端。下面使用本机 IDEA 内置 Maven；若安装了其他 Maven，请换成实际路径：
 
 ~~~cmd
-call "D:\IntelliJ IDEA 2026.1.1\plugins\maven-plugin\lib\maven3\bin\mvn.cmd" -f AI-dianping-backend\pom.xml -Dmaven.repo.local=C:\Users\31625\.m2\repository -DskipTests package
+call "D:\IntelliJ IDEA 2026.1.1\plugins\maven-plugin\lib\maven3\bin\mvn.cmd" -f backend\pom.xml -Dmaven.repo.local=C:\Users\31625\.m2\repository -DskipTests package
 ~~~
 
 然后准备 200 名用户、两张各有 100 张库存的秒杀券以及一张普通券：
 
 ~~~cmd
-"%HMDP_PY%" -X utf8 performance\jmeter\manage.py prepare --users 200 --stock 100
+"%TANJIAN_PY%" -X utf8 performance\jmeter\manage.py prepare --users 200 --stock 100
 ~~~
 
 按提示输入 MySQL 密码；不会把密码写到文件或 Java 命令行。也可通过当前进程的 MYSQL_PWD 提供。若工具位置改变，可用 --java、--mysql、--redis-server 参数，详见 prepare --help。
 
 脚本会创建：
 
-- 新库 hmdp_perf_时间戳_随机串，保留正常 hmdp 库的记录。
+- 新库 tanjian_perf_时间戳_随机串，保留正常 hmdp 库的记录。
 - 独立 Redis 127.0.0.1:16379，新目录启动，无持久化。
 - 独立后端 http://127.0.0.1:18081，两个 Redis 客户端均指向测试实例。
 - .runtime/current.properties：JMeter 目标和数据路径。
@@ -65,7 +65,7 @@ users.csv 每行是不同用户；same-user.csv 只有同一个用户一行，�
 验证码由准备脚本预先写入测试 Redis，有效两小时。登录仍调用真实 /user/login，但不包含短信通道耗时，不能称为“包含短信的完整登录吞吐量”。过期后续期：
 
 ~~~cmd
-"%HMDP_PY%" -X utf8 performance\jmeter\manage.py renew-codes
+"%TANJIAN_PY%" -X utf8 performance\jmeter\manage.py renew-codes
 ~~~
 
 CSV 和报告均已加入 Git 忽略规则，不要把真实账号、验证码或 token 提交到仓库。
@@ -75,7 +75,7 @@ CSV 和报告均已加入 Git 忽略规则，不要把真实账号、验证码�
 用 GUI 打开现成计划，同时加载当前批次的参数：
 
 ~~~cmd
-call "%HMDP_JMETER%" -t performance\jmeter\read-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=1 -Jloops=1
+call "%TANJIAN_JMETER%" -t performance\jmeter\read-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=1 -Jloops=1
 ~~~
 
 计划结构包含 HTTP 默认请求值、HTTP 信息头管理器、CSV 数据文件设置、登录请求、内部业务循环和 JSR223 断言。
@@ -102,19 +102,19 @@ JMeter 进程正常退出不代表所有断言都通过；即使有失败样本�
 先做 3 用户、每人 1 次登录：
 
 ~~~cmd
-call "%HMDP_JMETER%" -n -t performance\jmeter\login-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=3 -Jramp_s=1 -Jloops=1 -l performance\jmeter\results\login-smoke.jtl -j performance\jmeter\results\login-smoke.log
+call "%TANJIAN_JMETER%" -n -t performance\jmeter\login-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=3 -Jramp_s=1 -Jloops=1 -l performance\jmeter\results\login-smoke.jtl -j performance\jmeter\results\login-smoke.log
 ~~~
 
 再用 5 用户预热 30 秒：
 
 ~~~cmd
-call "%HMDP_JMETER%" -n -t performance\jmeter\read-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=5 -Jramp_s=5 -Jduration_s=30 -Jthink_ms=100 -l performance\jmeter\results\warmup.jtl -j performance\jmeter\results\warmup.log
+call "%TANJIAN_JMETER%" -n -t performance\jmeter\read-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=5 -Jramp_s=5 -Jduration_s=30 -Jthink_ms=100 -l performance\jmeter\results\warmup.jtl -j performance\jmeter\results\warmup.log
 ~~~
 
 20 用户、20 秒逐步启动、总共 120 秒的读压测：
 
 ~~~cmd
-call "%HMDP_JMETER%" -n -t performance\jmeter\read-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=20 -Jramp_s=20 -Jduration_s=120 -Jthink_ms=100 -l performance\jmeter\results\read-20.jtl -j performance\jmeter\results\read-20.log -e -o performance\jmeter\results\read-20-html
+call "%TANJIAN_JMETER%" -n -t performance\jmeter\read-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=20 -Jramp_s=20 -Jduration_s=120 -Jthink_ms=100 -l performance\jmeter\results\read-20.jtl -j performance\jmeter\results\read-20.log -e -o performance\jmeter\results\read-20-html
 ~~~
 
 然后分别改为 50、100、200 用户，每次使用新结果文件和报告目录。每档建议先持续 2～5 分钟，确定稳定负载后再做 30～60 分钟持续测试。出现持续异常或积压失控时停止并定位。
@@ -128,7 +128,7 @@ analyze.py 的接口吞吐量以整个选定统计窗口为分母，窗口内可
 排除前 20 秒逐步启动阶段，查看稳定窗口：
 
 ~~~cmd
-"%HMDP_PY%" -X utf8 performance\jmeter\analyze.py performance\jmeter\results\read-20.jtl --skip-first-seconds 20 --expected-threads 20 --output performance\jmeter\results\read-20-summary.json
+"%TANJIAN_PY%" -X utf8 performance\jmeter\analyze.py performance\jmeter\results\read-20.jtl --skip-first-seconds 20 --expected-threads 20 --output performance\jmeter\results\read-20-summary.json
 ~~~
 
 analyze.py 使用 nearest-rank 分位数，与 HTML 报告的估计方法可能略有差异。对比时使用相同统计窗口和口径。
@@ -138,9 +138,9 @@ analyze.py 使用 nearest-rank 分位数，与 HTML 报告的估计方法可能�
 确认这张测试券未被此前的写冒烟用例消耗。查询计划不会消费库存：
 
 ~~~cmd
-call "%HMDP_JMETER%" -n -t performance\jmeter\seckill-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=200 -Jramp_s=10 -Jattempts=1 -Jpoll_limit=100 -Jpoll_ms=200 -l performance\jmeter\results\seckill-200.jtl -j performance\jmeter\results\seckill-200.log -e -o performance\jmeter\results\seckill-200-html
-"%HMDP_PY%" -X utf8 performance\jmeter\analyze.py performance\jmeter\results\seckill-200.jtl --expected-threads 200 --output performance\jmeter\results\seckill-200-summary.json
-"%HMDP_PY%" -X utf8 performance\jmeter\manage.py verify --case seckill --expected-count 100
+call "%TANJIAN_JMETER%" -n -t performance\jmeter\seckill-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=200 -Jramp_s=10 -Jattempts=1 -Jpoll_limit=100 -Jpoll_ms=200 -l performance\jmeter\results\seckill-200.jtl -j performance\jmeter\results\seckill-200.log -e -o performance\jmeter\results\seckill-200-html
+"%TANJIAN_PY%" -X utf8 performance\jmeter\analyze.py performance\jmeter\results\seckill-200.jtl --expected-threads 200 --output performance\jmeter\results\seckill-200-summary.json
+"%TANJIAN_PY%" -X utf8 performance\jmeter\manage.py verify --case seckill --expected-count 100
 ~~~
 
 同步定时器在 POST 前集合线程，最多等 30 秒，再发起一次突发请求。
@@ -159,7 +159,7 @@ call "%HMDP_JMETER%" -n -t performance\jmeter\seckill-load.jmx -q performance\jm
 
 verify 等待队列排空后检查订单数、重复用户、MySQL/Redis 库存、已购用户数、pending 和 lag。理想终态：订单 100、两边库存 0、重复用户 0、pending=0、lag=0。业务售罄不是系统错误，但也不是购买成功。
 
-手动核对时，在本批次 hmdp_perf_* 测试库执行：
+手动核对时，在本批次 tanjian_perf_* 测试库执行：
 
 ~~~sql
 SELECT COUNT(*) FROM tb_voucher_order WHERE voucher_id=800000001;
@@ -174,9 +174,9 @@ HAVING COUNT(*)>1;
 **6. 同一账号并发重复领取：50 线程**
 
 ~~~cmd
-call "%HMDP_JMETER%" -n -t performance\jmeter\duplicate-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=50 -Jramp_s=5 -Jattempts=1 -l performance\jmeter\results\duplicate-50.jtl -j performance\jmeter\results\duplicate-50.log
-"%HMDP_PY%" -X utf8 performance\jmeter\analyze.py performance\jmeter\results\duplicate-50.jtl --expected-threads 50
-"%HMDP_PY%" -X utf8 performance\jmeter\manage.py verify --case duplicate --expected-count 1
+call "%TANJIAN_JMETER%" -n -t performance\jmeter\duplicate-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=50 -Jramp_s=5 -Jattempts=1 -l performance\jmeter\results\duplicate-50.jtl -j performance\jmeter\results\duplicate-50.log
+"%TANJIAN_PY%" -X utf8 performance\jmeter\analyze.py performance\jmeter\results\duplicate-50.jtl --expected-threads 50
+"%TANJIAN_PY%" -X utf8 performance\jmeter\manage.py verify --case duplicate --expected-count 1
 ~~~
 
 使用另一张券以及循环读取的同一个账号。初始库存 100 时，预期新订单 1、剩余库存 99，其余请求提示重复。不能用同一个 token 的 200 线程代替“200 名不同用户”测试。
@@ -186,11 +186,11 @@ call "%HMDP_JMETER%" -n -t performance\jmeter\duplicate-load.jmx -q performance\
 **7. 普通领券、预约创建与取消**
 
 ~~~cmd
-call "%HMDP_JMETER%" -n -t performance\jmeter\claim-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=200 -Jramp_s=10 -l performance\jmeter\results\claim-200.jtl -j performance\jmeter\results\claim-200.log
-"%HMDP_PY%" -X utf8 performance\jmeter\manage.py verify --case claim --expected-count 200
+call "%TANJIAN_JMETER%" -n -t performance\jmeter\claim-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=200 -Jramp_s=10 -l performance\jmeter\results\claim-200.jtl -j performance\jmeter\results\claim-200.log
+"%TANJIAN_PY%" -X utf8 performance\jmeter\manage.py verify --case claim --expected-count 200
 
-call "%HMDP_JMETER%" -n -t performance\jmeter\reservation-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=50 -Jramp_s=10 -Jloops=1 -l performance\jmeter\results\reservation-50.jtl -j performance\jmeter\results\reservation-50.log
-"%HMDP_PY%" -X utf8 performance\jmeter\manage.py verify --case reservation --expected-count 50
+call "%TANJIAN_JMETER%" -n -t performance\jmeter\reservation-load.jmx -q performance\jmeter\.runtime\current.properties -Jthreads=50 -Jramp_s=10 -Jloops=1 -l performance\jmeter\results\reservation-50.jtl -j performance\jmeter\results\reservation-50.log
+"%TANJIAN_PY%" -X utf8 performance\jmeter\manage.py verify --case reservation --expected-count 50
 ~~~
 
 预约用例先创建再取消，预期 50 条新预约均为已取消，活动预约 0。每个写计划也要用 analyze.py 检查 JTL；数据库终态正确，不代表中间没有请求失败。
@@ -218,7 +218,7 @@ AI 生成接口需另外断言 fallback=false，本地模板耗时不代表模�
 HTML 报告打开输出目录的 index.html。也可从已有 JTL 重新生成：
 
 ~~~cmd
-call "%HMDP_JMETER%" -g performance\jmeter\results\read-20.jtl -q performance\jmeter\.runtime\current.properties -o performance\jmeter\results\read-20-report-new
+call "%TANJIAN_JMETER%" -g performance\jmeter\results\read-20.jtl -q performance\jmeter\.runtime\current.properties -o performance\jmeter\results\read-20-report-new
 ~~~
 
 JTL 使用新文件名，HTML 输出目录须不存在或为空。[官方报告说明](https://jmeter.apache.org/usermanual/generating-dashboard.html)
@@ -228,10 +228,10 @@ JTL 使用新文件名，HTML 输出目录须不存在或为空。[官方报告�
 **9. 停止和重建**
 
 ~~~cmd
-"%HMDP_PY%" -X utf8 performance\jmeter\manage.py stop --drop-test-database
+"%TANJIAN_PY%" -X utf8 performance\jmeter\manage.py stop --drop-test-database
 ~~~
 
-脚本核对 PID 和本批次标识，只停止自己启动的服务，删除库限定本批次 hmdp_perf_*；CSV、日志和报告保留便于复查。重新 prepare 创建全新批次。若只想停服务保留测试库，用 stop 不带删除参数。
+脚本核对 PID 和本批次标识，只停止自己启动的服务，删除库限定本批次 tanjian_perf_*；CSV、日志和报告保留便于复查。重新 prepare 创建全新批次。若只想停服务保留测试库，用 stop 不带删除参数。
 
 **10. GUI 加载异常与校验**
 

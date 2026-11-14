@@ -1,8 +1,8 @@
 <div align="center">
 
-# 探见 · AI 本地生活与智能经营平台
+# 探见 · 本地生活与 AI 运营平台
 
-**hmdp-Java · 店铺发现、内容互动、到店预约与 AI 创作**
+**tanjian-life · 店铺发现、内容互动、到店预约与 AI 创作**
 
 将用户的城市生活体验，与商家的内容创作、优惠和预约处理连接起来。
 
@@ -10,9 +10,9 @@
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.6-6DB33F?logo=springboot&logoColor=white)
 ![Vue](https://img.shields.io/badge/Vue-2-4FC08D?logo=vuedotjs&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
-[![Test](https://github.com/lipenglai0720/hmdp-Java/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/lipenglai0720/hmdp-Java/actions/workflows/test.yml)
+[![Test](https://github.com/lipenglai0720/tanjian-life/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/lipenglai0720/tanjian-life/actions/workflows/test.yml)
 
-[快速开始](#快速开始) · [架构设计](docs/architecture.md) · [部署指南](docs/deployment.md) · [功能对照](AI-dianping-frontend/FEATURE-COVERAGE.md) · [压测指南](performance/jmeter/README.md)
+[快速开始](#快速开始) · [架构设计](docs/architecture.md) · [部署指南](docs/deployment.md) · [功能对照](frontend/FEATURE-COVERAGE.md) · [压测指南](performance/jmeter/README.md)
 
 </div>
 
@@ -82,14 +82,14 @@ flowchart LR
 需要 JDK 17、Maven、MySQL 8 与 Redis。Windows 可直接使用仓库内的 nginx 程序；其他系统可使用自行安装的 nginx 并调整静态资源目录。
 
 ```bash
-git clone https://github.com/lipenglai0720/hmdp-Java.git
-cd hmdp-Java
+git clone https://github.com/lipenglai0720/tanjian-life.git
+cd tanjian-life
 ```
 
 **1. 创建本地配置**
 
 ```powershell
-Copy-Item AI-dianping-backend/src/main/resources/application.example.yml AI-dianping-backend/src/main/resources/application.yml
+Copy-Item backend/src/main/resources/application.example.yml backend/src/main/resources/application.yml
 ```
 
 配置数据库、Redis、模型地址与上传目录。密码和模型密钥可通过 `DB_PASSWORD`、`REDIS_PASSWORD`、`DEEPSEEK_API_KEY` 环境变量提供；`application.yml` 已被 Git 忽略。Linux / macOS 可用 `cp` 复制配置。
@@ -107,17 +107,17 @@ CREATE DATABASE hmdp CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 **3. 启动后端**
 
 ```bash
-mvn -f AI-dianping-backend/pom.xml spring-boot:run
+mvn -f backend/pom.xml spring-boot:run
 ```
 
-也可在 IDEA 中运行 `HmDianPingApplication`。后端默认监听 8081。
+也可在 IDEA 中运行 `TanjianApplication`。后端默认监听 8081。
 
 **4. 启动前端**
 
 在 Windows PowerShell 中执行：
 
 ```powershell
-cd AI-dianping-frontend
+cd frontend
 New-Item -ItemType Directory -Path logs,temp -Force | Out-Null
 .\nginx.exe -t
 Start-Process -FilePath ".\nginx.exe" -WorkingDirectory (Get-Location).Path -WindowStyle Hidden
@@ -128,25 +128,25 @@ Start-Process -FilePath ".\nginx.exe" -WorkingDirectory (Get-Location).Path -Win
 ## 测试与性能验证
 
 ```bash
-mvn -f AI-dianping-backend/pom.xml test
+mvn -f backend/pom.xml test
 node scripts/verify_frontend.cjs
 ```
 
-后端单元测试与前端模板检查已接入 GitHub Actions。需要真实数据库、Redis 或批量写入的手工测试默认不执行，只有显式设置 `HMDP_RUN_MANUAL_TESTS=true` 才会开启。
+后端单元测试与前端模板检查已接入 GitHub Actions。需要真实数据库、Redis 或批量写入的手工测试默认不执行，只有显式设置 `TANJIAN_RUN_MANUAL_TESTS=true` 才会开启。
 
 JMeter 提供登录、混合读取、秒杀、重复领取、普通券领取和预约六套计划，使用独立测试环境。运行方式见 [压测指南](performance/jmeter/README.md)，已有小规模验证见 [冒烟记录](performance/jmeter/SMOKE-RESULTS.md)。该记录用于验证流程，不代表系统最大吞吐量。
 
 ## 项目结构
 
 ```text
-AI-dianping-backend/
+backend/
 ├── db/                  # 业务初始化与增量升级 SQL
 ├── src/main/java/       # Controller、Service、缓存、订单与 MCP
 ├── src/main/resources/  # 配置模板、Mapper、Lua 与模型系统提示
 └── src/test/            # 后端自动化测试
-AI-dianping-frontend/
+frontend/
 ├── conf/                # nginx 与 MIME 配置
-├── html/hmdp/           # Vue 入口、视图、脚本与样式
+├── html/tanjian/           # Vue 入口、视图、脚本与样式
 ├── docs/                # 随 nginx 保留的第三方许可证
 └── nginx.exe            # Windows 本地运行程序
 docs/                    # 架构、部署与界面预览

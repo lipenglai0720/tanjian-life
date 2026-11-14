@@ -15,7 +15,7 @@ PASSWORD=None
 def say(value): print(value if isinstance(value,str) else json.dumps(value,ensure_ascii=False),flush=True)
 def password():
     global PASSWORD
-    if PASSWORD is None: PASSWORD=os.environ.get("MYSQL_PWD") or os.environ.get("HMDP_MYSQL_PASSWORD") or getpass.getpass("MySQL password: ")
+    if PASSWORD is None: PASSWORD=os.environ.get("MYSQL_PWD") or os.environ.get("TANJIAN_MYSQL_PASSWORD") or getpass.getpass("MySQL password: ")
     return PASSWORD
 def mysql(meta,sql,database=None):
     env=os.environ.copy();env["MYSQL_PWD"]=password()
@@ -58,7 +58,7 @@ def save(meta):
 def state():
     if not CURRENT.exists(): raise RuntimeError("Run prepare first")
     meta=json.loads(CURRENT.read_text(encoding="utf-8"))
-    if not re.fullmatch(r"hmdp_perf_[a-z0-9_]+",meta["database"]): raise RuntimeError("Unsafe test database name")
+    if not re.fullmatch(r"tanjian_perf_[a-z0-9_]+",meta["database"]): raise RuntimeError("Unsafe test database name")
     folder=Path(meta["dir"]).resolve()
     if STATE.resolve() not in folder.parents: raise RuntimeError("Runtime path must remain inside .runtime")
     if int(meta["redis_port"])<10000 or int(meta["api_port"])<10000: raise RuntimeError("Not an isolated port")
@@ -96,14 +96,14 @@ def prepare(args):
     folder=(STATE/stamp).resolve();folder.mkdir(parents=True)
     mysql_cli=args.mysql or shutil.which("mysql") or MYSQL_DEFAULT
     java=args.java or shutil.which("java") or JAVA_DEFAULT
-    jar=ROOT/"AI-dianping-backend/target/AI-dianping-backend-0.0.1-SNAPSHOT.jar"
+    jar=ROOT/"backend/target/tanjian-backend-0.0.1-SNAPSHOT.jar"
     for path in [mysql_cli,args.redis_server,java,str(jar)]:
         if not Path(path).is_file():raise RuntimeError("Required file not found: "+path)
-    meta={"database":"hmdp_perf_"+stamp,"dir":str(folder),"mysql":str(mysql_cli),"mysql_user":args.mysql_user,"mysql_port":args.mysql_port,"redis_port":args.redis_port,"api_port":args.api_port,"users":args.users,"stock":args.stock,"start_user":900000000,"vouchers":{"seckill":800000001,"duplicate":800000002,"claim":800000003},"redis_signature":"hmdp-perf-"+stamp+".conf"}
+    meta={"database":"tanjian_perf_"+stamp,"dir":str(folder),"mysql":str(mysql_cli),"mysql_user":args.mysql_user,"mysql_port":args.mysql_port,"redis_port":args.redis_port,"api_port":args.api_port,"users":args.users,"stock":args.stock,"start_user":900000000,"vouchers":{"seckill":800000001,"duplicate":800000002,"claim":800000003},"redis_signature":"tanjian-perf-"+stamp+".conf"}
     save(meta);created=False
     try:
         mysql(meta,"CREATE DATABASE "+meta["database"]+" CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");created=True
-        for name in ["db.sql","AI-dianping-backend/db/ai_skill_init.sql","AI-dianping-backend/db/reservation_init.sql","AI-dianping-backend/db/performance_upgrade.sql"]:
+        for name in ["db.sql","backend/db/ai_skill_init.sql","backend/db/reservation_init.sql","backend/db/performance_upgrade.sql"]:
             sql=(ROOT/name).read_text(encoding="utf-8-sig")
             # The project supplements contain USE hmdp; remove only that known
             # directive in memory, then reject any other database switch.
@@ -151,10 +151,10 @@ def prepare(args):
         command=[java,"-Xms128m","-Xmx512m","-jar",str(jar),"--server.address=127.0.0.1","--server.port="+str(args.api_port),
                  "--spring.datasource.url=jdbc:mysql://127.0.0.1:"+str(args.mysql_port)+"/"+meta["database"]+"?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8&allowPublicKeyRetrieval=true",
                  "--spring.data.redis.host=127.0.0.1","--spring.data.redis.port="+str(args.redis_port),"--spring.data.redis.database=0","--spring.data.redis.password=",
-                 "--logging.level.com.hmdp=WARN","--spring.main.banner-mode=off","--hm.upload.path="+str(folder/"upload")]
+                 "--logging.level.com.tanjian=WARN","--spring.main.banner-mode=off","--tanjian.upload.path="+str(folder/"upload")]
         for model in ["chat-model","streaming-chat-model"]:
             command.extend(["--langchain4j.open-ai."+model+".base-url=http://127.0.0.1:1/v1","--langchain4j.open-ai."+model+".api-key=local-perf-disabled","--langchain4j.open-ai."+model+".log-requests=false","--langchain4j.open-ai."+model+".log-responses=false"])
-        process=start(command,ROOT/"AI-dianping-backend",folder/"backend.log",env);meta["backend_pid"]=process.pid;save(meta)
+        process=start(command,ROOT/"backend",folder/"backend.log",env);meta["backend_pid"]=process.pid;save(meta)
         for _ in range(180):
             if process.poll() is not None:raise RuntimeError("Test backend exited; inspect backend.log")
             try:

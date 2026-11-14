@@ -73,7 +73,7 @@ def iff(tree,name,condition):
 def write(doc,file):
     E.indent(doc,space="  ");E.ElementTree(doc).write(ROOT/file,encoding="UTF-8",xml_declaration=True)
 def generate():
-    doc,tree=base("HMDP - mixed read load","Read load",duration=True)
+    doc,tree=base("Tanjian - mixed read load","Read load",duration=True)
     login(tree);work=loop(tree,"Measured read loops","${__P(loops,-1)}");timer(work,"Think time per read","${__P(think_ms,100)}")
     reads=[
         ("read.shop_detail","/shop/${shop_id}",{}),
@@ -87,9 +87,9 @@ def generate():
         ("read.skills_catalog","/ai/skills",{})]
     for label,path,query in reads:script(http(work,label,path,query=query),"JSR223Assertion","HTTP and business success","assert_success.groovy")
     write(doc,"read-load.jmx")
-    doc,tree=base("HMDP - login load","Login load");work=loop(tree,"Login loops","${__P(loops,1)}");login(work,"auth.login_measured");write(doc,"login-load.jmx")
+    doc,tree=base("Tanjian - login load","Login load");work=loop(tree,"Login loops","${__P(loops,1)}");login(work,"auth.login_measured");write(doc,"login-load.jmx")
     for file,title,csv,recycle in [("seckill-load.jmx","Unique user oversell test","users.csv",False),("duplicate-load.jmx","Same user duplicate test","same-user.csv",True),("claim-load.jmx","Ordinary voucher claim","claim-users.csv",False)]:
-        doc,tree=base("HMDP - "+title,title,csv,recycle,threads=20,ramp=2);login(tree);work=loop(tree,"Attempts per user","${__P(attempts,1)}")
+        doc,tree=base("Tanjian - "+title,title,csv,recycle,threads=20,ramp=2);login(tree);work=loop(tree,"Attempts per user","${__P(attempts,1)}")
         claim=file=="claim-load.jmx"
         child=http(work,"claim.submit" if claim else "seckill.submit","/voucher-order/"+("claim" if claim else "seckill")+"/${voucher_id}","POST")
         sync=element("SyncTimer","Burst: all threads, max 30s wait","TestBeanGUI");prop(sync,"groupSize",0,"intProp");prop(sync,"timeoutInMs",30000,"longProp");add(child,sync)
@@ -99,7 +99,7 @@ def generate():
         prop(polling,"WhileController.condition","${__groovy(vars.get('poll_status') == 'PENDING' && Integer.parseInt(vars.get('poll_count')) < Integer.parseInt(props.getProperty('poll_limit'\\,'100')))}")
         poll=http(add(accepted,polling),"seckill.poll","/voucher-order/result/${order_id}");timer(poll,"Poll interval","${__P(poll_ms,200)}")
         script(poll,"JSR223PostProcessor","Read final state","poll.groovy");script(accepted,"JSR223Sampler","order.final","final.groovy");write(doc,file)
-    doc,tree=base("HMDP - reservation lifecycle","Reservation create and cancel");login(tree);work=loop(tree,"Reservation loops","${__P(loops,1)}")
+    doc,tree=base("Tanjian - reservation lifecycle","Reservation create and cancel");login(tree);work=loop(tree,"Reservation loops","${__P(loops,1)}")
     child=http(work,"reservation.create","/reservation","POST",'{"shopId":${shop_id},"reservationTime":"${reservation_time}","numPeople":2,"remark":"JMeter isolated test"}')
     script(child,"JSR223PostProcessor","Capture reservation id","reservation.groovy")
     created=iff(work,"Cancel test reservation","${__groovy(vars.get('reservation_id') != '')}")

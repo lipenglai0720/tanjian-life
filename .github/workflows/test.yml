@@ -19,9 +19,9 @@ jobs:
           distribution: temurin
           java-version: "17"
           cache: maven
-          cache-dependency-path: AI-dianping-backend/pom.xml
+          cache-dependency-path: backend/pom.xml
       - name: Run backend tests
-        run: mvn -B -f AI-dianping-backend/pom.xml test
+        run: mvn -B -f backend/pom.xml test
 
   frontend:
     runs-on: ubuntu-latest
