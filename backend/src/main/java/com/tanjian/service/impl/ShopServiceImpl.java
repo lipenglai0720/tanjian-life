@@ -2,7 +2,8 @@ package com.tanjian.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.common.hash.BloomFilter;
+import com.tanjian.service.CacheInvalidationEvents;
+import org.springframework.transaction.support.TransactionTemplate;
 import com.tanjian.dto.Result;
 import com.tanjian.utils.CacheClient;
 import com.tanjian.entity.Shop;
@@ -44,9 +45,8 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     @Resource
     private org.redisson.api.RedissonClient redissonClient;
 
-    // 布隆过滤器
-    @Resource
-    private BloomFilter<Long> bloomFilter;
+    @Resource private CacheInvalidationEvents cacheEvents;
+    @Resource private TransactionTemplate transactions;
 
     @Override
     public Result queryById(Long id) {
@@ -54,7 +54,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
                 RedisConstants.CACHE_SHOP_KEY, RedisConstants.LOCK_SHOP_KEY,
                 id, Shop.class, this::getById,
                 RedisConstants.CACHE_SHOP_TTL, TimeUnit.MINUTES,
-                RedisConstants.CACHE_NULL_TTL, TimeUnit.MINUTES
+                RedisConstants.CACHE_NULL_TTL, TimeUnit.SECONDS
         );
         if(shop==null){
             return Result.fail("店铺不存在");
@@ -65,63 +65,42 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     }
 
 
+
     @Override
-    //先更新数据库，再删除缓存
     public Result updateShop(Shop shop) {
-        Long shopId = shop.getId();
-        if (shopId == null) {
-            return Result.fail("店铺id不能为空");
-        }
-        org.redisson.api.RLock lock = redissonClient.getLock(RedisConstants.LOCK_SHOP_KEY + shopId);
-        boolean locked = false;
+        if(shop.getId()==null) return Result.fail("店铺id不能为空");
+        var lock=redissonClient.getLock(RedisConstants.LOCK_SHOP_KEY+shop.getId());
+        boolean held=false;
         try {
-        locked = lock.tryLock(3, TimeUnit.SECONDS);
-        if (!locked) return Result.fail("店铺资料正在更新，请稍后重试");
-        Shop oldShop = getById(shopId);
-        if (oldShop == null) return Result.fail("店铺不存在");
-        // 1.更新数据库
-        if (!updateById(shop)) return Result.fail("店铺信息更新失败");
-        if (oldShop != null && oldShop.getTypeId() != null && shop.getTypeId() != null
-                && !oldShop.getTypeId().equals(shop.getTypeId())) {
-            stringRedisTemplate.opsForGeo().remove(
-                    RedisConstants.SHOP_GEO_KEY + oldShop.getTypeId(), shopId.toString());
-        }
-        syncGeo(getById(shopId));
-        // 2.删除本地缓存和Redis缓存
-        cacheClient.delete(RedisConstants.CACHE_SHOP_KEY + shopId);
-
-        return Result.ok();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return Result.fail("更新被中断，请稍后重试");
-        } finally {
-            if (locked && lock.isHeldByCurrentThread()) lock.unlock();
-        }
+            held=lock.tryLock(3,TimeUnit.SECONDS);
+            if(!held) return Result.fail("店铺资料正在更新，请稍后重试");
+            Long event=transactions.execute(tx -> {
+                Shop previous=getById(shop.getId());
+                if(previous==null) return null;
+                if(!updateById(shop)) throw new IllegalStateException("店铺信息更新失败");
+                return cacheEvents.record(shop.getId(),previous.getTypeId());
+            });
+            if(event==null) return Result.fail("店铺不存在");
+            // Failure after commit must not turn a committed update into a client-visible failure.
+            try { cacheEvents.deliver(event); }
+            catch(Exception e) { log.warn("Committed shop update awaits cache event {}",event); }
+            return Result.ok();
+        } catch(InterruptedException e) {
+            Thread.currentThread().interrupt(); return Result.fail("更新被中断，请稍后重试");
+        } finally { if(held && lock.isHeldByCurrentThread()) lock.unlock(); }
     }
 
-    // 新增店铺时需要更新布隆过滤器
     @Override
-    @Transactional
     public boolean save(Shop shop) {
-        boolean result = super.save(shop);
-        if (result && shop.getId() != null) {
-            // 将新增的店铺ID添加到布隆过滤器
-            bloomFilter.put(shop.getId());
-            syncGeo(shop);
-        }
-        return result;
+        Long event=transactions.execute(tx -> {
+            if(!super.save(shop)) return null;
+            return cacheEvents.record(shop.getId(),null);
+        });
+        if(event==null) return false;
+        try { cacheEvents.deliver(event); }
+        catch(Exception e) { log.warn("New shop awaits cache event {}",event); }
+        return true;
     }
-
-    private void syncGeo(Shop shop) {
-        if (shop.getTypeId() == null || shop.getX() == null || shop.getY() == null || shop.getId() == null) {
-            return;
-        }
-        stringRedisTemplate.opsForGeo().add(
-                RedisConstants.SHOP_GEO_KEY + shop.getTypeId(),
-                new org.springframework.data.geo.Point(shop.getX(), shop.getY()),
-                shop.getId().toString());
-    }
-
 
     @Override
     public Result queryShopByType(Integer typeId, Integer current, Double x, Double y) {

@@ -1,231 +1,129 @@
 package com.tanjian.utils;
 
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.hash.BloomFilter;
-import lombok.extern.slf4j.Slf4j;
+import com.tanjian.observability.ProjectMetrics;
+import org.redisson.api.RedissonClient;
+import org.redisson.api.RLock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
-import jakarta.annotation.Resource;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.LongSupplier;
 
-
-@Slf4j
 @Component
 public class CacheClient {
-
-    private static final long LOCAL_CACHE_MAX_SIZE = 10_000L;
-    private static final long LOCAL_CACHE_TTL_SECONDS = 30L;
     public static final String INVALIDATION_CHANNEL = "cache:invalidate";
+    private final Cache<String, LocalValue> local = CacheBuilder.newBuilder().maximumSize(10_000).build();
+    private final Object invalidationGuard = new Object();
+    private long generation;
+    private final Semaphore databasePermits = new Semaphore(16);
+    private final StringRedisTemplate redis;
+    private final RedissonClient redisson;
+    private final ProjectMetrics metrics;
+    private final LongSupplier clock;
 
-    // 布隆过滤器
-    @Resource
-    private BloomFilter<Long> bloomFilter;
-
-    @Resource
-    private RedissonClient redissonClient;
-    private final Cache<String, LocalCacheValue> localCache = CacheBuilder.newBuilder()
-            .maximumSize(LOCAL_CACHE_MAX_SIZE)
-            .build();
-
-    private final StringRedisTemplate stringRedisTemplate;
-
-    public CacheClient(StringRedisTemplate stringRedisTemplate) {
-        this.stringRedisTemplate = stringRedisTemplate;
+    @Autowired
+    public CacheClient(StringRedisTemplate redis, RedissonClient redisson, ProjectMetrics metrics) {
+        this(redis, redisson, metrics, System::nanoTime);
     }
-
-    //将任意Java对象序列化为json并存储在string类型的key中，并且可以设置TTL过期时间
-    public void set(String key, Object value, Long time, TimeUnit unit){
-        setJson(key, JSONUtil.toJsonStr(value), time, unit);
+    public CacheClient(StringRedisTemplate redis, RedissonClient redisson, ProjectMetrics metrics, LongSupplier clock) {
+        this.redis=redis; this.redisson=redisson; this.metrics=metrics; this.clock=clock;
     }
-
     public String get(String key, Long time, TimeUnit unit) {
-        LocalCacheValue localValue = getLocalValue(key);
-        if (localValue != null) {
-            return localValue.value;
+        LocalValue value=local.getIfPresent(key);
+        if (value!=null && clock.getAsLong()<value.expiresAt()) {
+            metrics.increment("cache.l1.hit"); return value.json();
         }
-        String json = stringRedisTemplate.opsForValue().get(key);
-        if (json != null) {
-            Long remaining = stringRedisTemplate.getExpire(key, TimeUnit.MILLISECONDS);
-            if (remaining != null && remaining > 0)
-                putLocalValue(key, json, Math.min(unit.toMillis(time), remaining), TimeUnit.MILLISECONDS);
-        }
+        local.invalidate(key);
+        long observed;
+        synchronized(invalidationGuard) { observed=generation; }
+        String json=redis.opsForValue().get(key);
+        if(json!=null) {
+            metrics.increment("cache.l2.hit");
+            Long ttl=redis.getExpire(key,TimeUnit.MILLISECONDS);
+            if(ttl!=null && ttl>0) putLocal(key,json,Math.min(unit.toMillis(time),ttl),observed);
+        } else metrics.increment("cache.miss");
         return json;
     }
-
+    public void set(String key,Object value,Long time,TimeUnit unit) {
+        setJson(key,JSONUtil.toJsonStr(value),unit.toMillis(time));
+    }
     public void delete(String key) {
-        localCache.invalidate(key);
-        stringRedisTemplate.delete(key);
-        stringRedisTemplate.convertAndSend(INVALIDATION_CHANNEL, key);
+        invalidateLocal(key);
+        redis.delete(key);
+        redis.convertAndSend(INVALIDATION_CHANNEL,key);
     }
-
     public void invalidateLocal(String key) {
-        localCache.invalidate(key);
-        if (key.startsWith(RedisConstants.CACHE_SHOP_KEY)) {
-            try { bloomFilter.put(Long.parseLong(key.substring(RedisConstants.CACHE_SHOP_KEY.length()))); }
-            catch (NumberFormatException ignored) { }
+        synchronized(invalidationGuard) { generation++; local.invalidate(key); }
+        metrics.increment("cache.invalidations");
+    }
+    /** Subscription reset also invalidates outstanding fills. */
+    public void clearLocal() {
+        synchronized(invalidationGuard) { generation++; local.invalidateAll(); }
+        metrics.increment("cache.subscription.resets");
+    }
+    private void putLocal(String key,String json,long ttlMillis,long observed) {
+        synchronized(invalidationGuard) {
+            if(observed==generation && ttlMillis>0)
+                local.put(key,new LocalValue(json,clock.getAsLong()+TimeUnit.MILLISECONDS.toNanos(Math.min(5000,ttlMillis))));
+            else metrics.increment("cache.stale_fill.discarded");
         }
     }
-
-    //根据指定的key查询缓存，并反序列化为指定类型，利用缓存空值的方式解决缓存穿透问题,利用互斥锁解决缓存击穿问题
-    public <R, ID> R queryWithPassThroughAndMutex(
-           final String keyPrefix, final String lockKeyPrefix, ID id, Class<R> type, Function<ID, R> dbFallback,
-            Long time, TimeUnit unit, Long nullValueTTL, TimeUnit nullValueUnit){
-        if (id == null) {
-            return null;
-        }
-        // 1.布隆过滤器判断id是否存在
-        if (id instanceof Long && !bloomFilter.mightContain((Long)id)) {
-            //不存在，直接返回错误
-            log.info("布隆过滤器拦截，id:{}不存在", id);
-            return null;
-        }
-        String key = keyPrefix + id;
-        String lockKey = lockKeyPrefix + id;
-        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(3);
-        while (true) {
-            // 2.先查本地缓存，再查Redis缓存
-            String json = getFromLocalOrRedis(key, time, unit, nullValueTTL, nullValueUnit);
-            // 3.判断是否存在
-            if (StrUtil.isNotBlank(json)) {
-                // 存在，直接返回
-                R result = JSONUtil.toBean(json, type);
-                return result;
+    private void setJson(String key,String json,long ttlMillis) {
+        long observed;
+        synchronized(invalidationGuard) { observed=generation; }
+        redis.opsForValue().set(key,json,ttlMillis,TimeUnit.MILLISECONDS);
+        putLocal(key,json,ttlMillis,observed);
+    }
+    public <R,ID> R queryWithPassThroughAndMutex(String prefix,String lockPrefix,ID id,Class<R> type,
+            Function<ID,R> fallback,Long time,TimeUnit unit,Long nullTtl,TimeUnit nullUnit) {
+        if(id==null) return null;
+        String key=prefix+id;
+        long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(3);
+        while(true) {
+            String json;
+            try { json=get(key,time,unit); }
+            catch(org.springframework.data.redis.RedisConnectionFailureException e) {
+                metrics.increment("cache.redis.unavailable"); return load(id,fallback);
             }
-
-            // 4.判断是否位空值（缓存空值）
-            if (json != null) {
-                // 是空值，返回不存在
-                return null;
-            }
-            // 5.不存在，去数据库查找
-            R result = null;
-            RLock lock = redissonClient.getLock(lockKey);
-            boolean isLock = false;
+            if(json!=null) return json.isEmpty()?null:JSONUtil.toBean(json,type);
+            RLock lock=redisson.getLock(lockPrefix+id);
+            boolean held=false;
             try {
-                isLock = lock.tryLock();
-                //判断是否获取锁成功
-                if (!isLock) {
-                    if (System.nanoTime() >= deadline) throw new IllegalArgumentException("店铺查询繁忙，请稍后重试");
-                    //失败，休眠并重试
-                    Thread.sleep(50);
-                    continue;
+                held=lock.tryLock();
+                if(!held) {
+                    if(System.nanoTime()>=deadline) throw new IllegalStateException("店铺查询繁忙，请稍后重试");
+                    Thread.sleep(25); continue;
                 }
-                // Double Check：获取锁后再次查询缓存
-                json = getFromLocalOrRedis(
-                        key, time, unit, nullValueTTL, nullValueUnit
-                );
-                if (StrUtil.isNotBlank(json)) {
-                    return JSONUtil.toBean(json, type);
+                json=get(key,time,unit);
+                if(json!=null) return json.isEmpty()?null:JSONUtil.toBean(json,type);
+                R result=load(id,fallback);
+                if(result==null) setJson(key,"",nullUnit.toMillis(nullTtl));
+                else {
+                    long ttl=unit.toMillis(time);
+                    ttl+=ThreadLocalRandom.current().nextLong(Math.max(1,ttl/5));
+                    setJson(key,JSONUtil.toJsonStr(result),ttl);
                 }
-
-                if (json != null) {
-                    // 命中空值缓存
-                    return null;
-                }
-
-                //成功，根据id查询数据库
-                result = dbFallback.apply(id);
-                // 6.数据库不存在，返回错误信息
-                if (result == null) {
-                    //将空值写入redis（设置较短的过期时间）
-                    setJson(key, "", nullValueTTL, nullValueUnit);
-                    return null;
-                }
-                // 7.存在，写入redis
-                // 生成TTL随机数,防止缓存雪崩
-                Long random = (long) RandomUtil.randomInt(1, Math.max(2, (int)(time / 5) + 1));
-                set(key, result, time + random, unit);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new RuntimeException(e);
-            } finally {
-                // 仅释放当前线程仍持有的锁
-                if (isLock && lock.isHeldByCurrentThread()) {
-                    lock.unlock();
-                }
-            }
-            // 8.返回
-            return result;
+                return result;
+            } catch(InterruptedException e) {
+                Thread.currentThread().interrupt(); throw new IllegalStateException("查询被中断",e);
+            } finally { if(held && lock.isHeldByCurrentThread()) lock.unlock(); }
         }
     }
-
-    //获取互斥锁
-    private boolean tryLock(String key){
-        Boolean flag = stringRedisTemplate.opsForValue().setIfAbsent(key, "1", 10, TimeUnit.SECONDS);
-        return BooleanUtil.isTrue(flag);
+    private <R,ID> R load(ID id,Function<ID,R> fallback) {
+        boolean acquired=false;
+        try {
+            acquired=databasePermits.tryAcquire(100,TimeUnit.MILLISECONDS);
+            if(!acquired) { metrics.increment("cache.db.rejected"); throw new IllegalStateException("店铺查询繁忙，请稍后重试"); }
+            metrics.increment("cache.db.loads"); return fallback.apply(id);
+        } catch(InterruptedException e) {
+            Thread.currentThread().interrupt(); throw new IllegalStateException("查询被中断",e);
+        } finally { if(acquired) databasePermits.release(); }
     }
-    //释放锁
-    private void unlock(String key){
-        stringRedisTemplate.delete(key);
-    }
-
-    private String getFromLocalOrRedis(String key, Long time, TimeUnit unit, Long nullValueTTL, TimeUnit nullValueUnit) {
-        LocalCacheValue localValue = getLocalValue(key);
-        if (localValue != null) {
-            return localValue.value;
-        }
-        String json = stringRedisTemplate.opsForValue().get(key);
-        if (json == null) {
-            return null;
-        }
-        if (StrUtil.isNotBlank(json)) {
-            Long remaining = stringRedisTemplate.getExpire(key, TimeUnit.MILLISECONDS);
-            if (remaining != null && remaining > 0)
-                putLocalValue(key, json, Math.min(unit.toMillis(time), remaining), TimeUnit.MILLISECONDS);
-        } else {
-            Long remaining = stringRedisTemplate.getExpire(key, TimeUnit.MILLISECONDS);
-            if (remaining != null && remaining > 0)
-                putLocalValue(key, json, Math.min(nullValueUnit.toMillis(nullValueTTL), remaining), TimeUnit.MILLISECONDS);
-        }
-        return json;
-    }
-
-    private void setJson(String key, String json, Long time, TimeUnit unit) {
-        stringRedisTemplate.opsForValue().set(key, json, time, unit);
-        putLocalValue(key, json, time, unit);
-    }
-
-    private LocalCacheValue getLocalValue(String key) {
-        LocalCacheValue value = localCache.getIfPresent(key);
-        if (value == null) {
-            return null;
-        }
-        if (value.isExpired()) {
-            localCache.invalidate(key);
-            return null;
-        }
-        return value;
-    }
-
-    private void putLocalValue(String key, String value, Long time, TimeUnit unit) {
-        if (time == null || unit == null || time <= 0) {
-            localCache.invalidate(key);
-            return;
-        }
-        long ttlNanos = Math.min(unit.toNanos(time), TimeUnit.SECONDS.toNanos(LOCAL_CACHE_TTL_SECONDS));
-        localCache.put(key, new LocalCacheValue(value, System.nanoTime() + ttlNanos));
-    }
-
-    private static class LocalCacheValue {
-        private final String value;
-        private final long expireAtNanos;
-
-        private LocalCacheValue(String value, long expireAtNanos) {
-            this.value = value;
-            this.expireAtNanos = expireAtNanos;
-        }
-
-        private boolean isExpired() {
-            return System.nanoTime() - expireAtNanos >= 0;
-        }
-    }
-
+    private record LocalValue(String json,long expiresAt) {}
 }
