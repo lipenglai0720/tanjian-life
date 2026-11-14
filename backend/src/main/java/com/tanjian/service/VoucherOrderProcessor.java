@@ -20,7 +20,7 @@ public class VoucherOrderProcessor {
     public Outcome create(VoucherOrder order, boolean seckill) {
         if(order.getId()==null||order.getUserId()==null||order.getVoucherId()==null)
             throw new IllegalArgumentException("订单消息缺少必要字段");
-        RLock lock=redisson.getLock("lock:order:"+order.getUserId());
+        RLock lock=redisson.getLock("lock:order:"+order.getUserId()+":"+order.getVoucherId());
         boolean locked=false;
         try {
             locked=lock.tryLock(2,TimeUnit.SECONDS);
