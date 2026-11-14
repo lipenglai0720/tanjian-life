@@ -40,3 +40,8 @@ Thumbs.db
 *.key
 __pycache__/
 *.pyc
+
+# Application runtime log directories
+/logs/
+/backend/logs/
+*.log.*

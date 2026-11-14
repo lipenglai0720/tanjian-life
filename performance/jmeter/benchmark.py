@@ -31,6 +31,8 @@ def main():
     base = root/'performance/jmeter'
     manage, analyze = module(base/'manage.py', 'bench_manage'), module(base/'analyze.py', 'bench_analyze')
     output = args.output.resolve(); output.mkdir(parents=True, exist_ok=True)
+    manage.STATE=base/'.runtime'/('benchmark-'+args.label)
+    manage.CURRENT=manage.STATE/'current.json'
     fixture = argparse.Namespace(users=200, stock=100, mysql=args.mysql, mysql_user='root',
         mysql_port=3306, redis_server=args.redis_server, redis_port=16379, api_port=18081,
         java=args.java, jar=str(args.jar) if args.jar else None)
@@ -45,7 +47,7 @@ def main():
                 stem = f'read-{threads}-r{repetition}'
                 raw = Path(meta['dir'])/(stem+'.jtl')
                 command = [args.java, '-Xms128m', '-Xmx512m', '-jar', str(args.jmeter), '-n',
-                    '-t', str(base/'read-load.jmx'), '-q', str(base/'.runtime/current.properties'),
+                    '-t', str(base/'read-load.jmx'), '-q', str(manage.STATE/'current.properties'),
                     f'-Jthreads={threads}', '-Jramp_s=1', '-Jduration_s=90', '-Jthink_ms=100',
                     '-l', str(raw), '-j', str(Path(meta['dir'])/(stem+'.log'))]
                 print(json.dumps({'starting': stem, 'label': args.label}), flush=True)

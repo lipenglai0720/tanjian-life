@@ -38,18 +38,28 @@ server:
 langchain4j:
   open-ai:
     chat-model:
-      base-url: https://api.deepseek.com
-      api-key: ${DEEPSEEK_API_KEY:}
-      model-name: deepseek-flash
-      log-requests: true
-      log-responses: true
+      base-url: ${AI_BASE_URL:http://127.0.0.1:1/v1}
+      api-key: ${DEEPSEEK_API_KEY:local-model-disabled}
+      model-name: ${AI_MODEL:local-disabled}
+      log-requests: false
+      log-responses: false
     streaming-chat-model:
-      base-url: https://api.deepseek.com
-      api-key: ${DEEPSEEK_API_KEY:}
-      model-name: deepseek-flash
-      log-requests: true
-      log-responses: true
+      base-url: ${AI_BASE_URL:http://127.0.0.1:1/v1}
+      api-key: ${DEEPSEEK_API_KEY:local-model-disabled}
+      model-name: ${AI_MODEL:local-disabled}
+      log-requests: false
+      log-responses: false
 # 图片上传本地存储路径
 tanjian:
   upload:
     path: ${TANJIAN_UPLOAD_PATH:./upload/}
+
+# Diagnostics are bound to loopback on a separate port.
+management:
+  server:
+    address: 127.0.0.1
+    port: ${TANJIAN_MANAGEMENT_PORT:9081}
+  endpoints:
+    web:
+      exposure:
+        include: health,tanjian
