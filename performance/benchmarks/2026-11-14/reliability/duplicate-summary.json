@@ -1,0 +1,67 @@
+{
+  "file": "duplicate.jtl.gz",
+  "measurement_seconds": 10.179,
+  "observed_threads": 100,
+  "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+  "samplers": {
+    "auth.login": {
+      "samples": 100,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 9.824,
+      "avg_ms": 3.47,
+      "p50_ms": 3,
+      "p95_ms": 4,
+      "p99_ms": 18
+    },
+    "seckill.submit": {
+      "samples": 100,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 9.824,
+      "avg_ms": 21.38,
+      "p50_ms": 23,
+      "p95_ms": 39,
+      "p99_ms": 40
+    },
+    "seckill.poll": {
+      "samples": 1,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 0.098,
+      "avg_ms": 3.0,
+      "p50_ms": 3,
+      "p95_ms": 3,
+      "p99_ms": 3
+    },
+    "order.final": {
+      "samples": 1,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 0.098,
+      "avg_ms": 44.0,
+      "p50_ms": 44,
+      "p95_ms": 44,
+      "p99_ms": 44
+    }
+  },
+  "submission_outcomes": {
+    "ACCEPTED": 1,
+    "DUPLICATE": 99
+  },
+  "terminal_outcomes": {
+    "CREATED": 1
+  },
+  "duplicate_accepted_ids": 0,
+  "successful_order_observed_end_to_end_ms": {
+    "samples": 1,
+    "p50": 367,
+    "p95": 367,
+    "p99": 367
+  },
+  "accepted_without_created": false,
+  "unexpected_failed_samples": 0,
+  "missing_outcome_columns": false,
+  "thread_count_matches": true,
+  "passed": true
+}

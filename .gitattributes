@@ -7,3 +7,6 @@ frontend/html/tanjian/js/vue.js linguist-vendored
 frontend/docs/** linguist-vendored
 performance/jmeter/*.jmx linguist-generated
 db.sql linguist-generated
+
+/backend/mvnw text eol=lf
+/backend/mvnw.cmd text eol=crlf

@@ -28,6 +28,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT,properties={
     "management.server.port=0","tanjian.orders.consumer-enabled=false","tanjian.cache.events.enabled=false",
     "tanjian.orders.retry-ms=100","tanjian.orders.stock-recovery-ms=3600000","logging.level.com.tanjian=WARN",
+    "langchain4j.open-ai.chat-model.model-name=local-disabled","langchain4j.open-ai.streaming-chat-model.model-name=local-disabled",
     "langchain4j.open-ai.chat-model.api-key=integration-disabled","langchain4j.open-ai.chat-model.base-url=http://127.0.0.1:1/v1",
     "langchain4j.open-ai.streaming-chat-model.api-key=integration-disabled","langchain4j.open-ai.streaming-chat-model.base-url=http://127.0.0.1:1/v1"})
 @EnabledIfEnvironmentVariable(named="TANJIAN_RUN_INTEGRATION_TESTS",matches="true")

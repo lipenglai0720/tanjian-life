@@ -19,7 +19,7 @@ for(const file of fs.readdirSync(path.join(root,'views'))){
 }
 for(const file of fs.readdirSync(root).filter(x=>x.endsWith('.html'))){
   const source=fs.readFileSync(path.join(root,file),'utf8');
-  assert(source.includes('/js/app.js?v=20261029'),`${file}: stale entry point`);entries++;
+  assert(source.includes('/js/app.js?v=20261114'),`${file}: stale entry point`);entries++;
 }
 for(const file of fs.readdirSync(path.join(root,'js')).filter(x=>x.endsWith('.js')&&x!=='vue.js'))
   new vm.Script(fs.readFileSync(path.join(root,'js',file),'utf8'),{filename:file});

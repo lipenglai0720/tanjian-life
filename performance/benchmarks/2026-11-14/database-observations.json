@@ -1,0 +1,22 @@
+{
+  "source": "MySQL performance_schema.events_statements_summary_by_digest",
+  "scope": "full matrix including warm-up; shop detail SELECT only",
+  "baseline": {
+    "shop_detail_selects": 14,
+    "statements": [
+      {
+        "normalized_sql": "SELECT `id` , NAME , `type_id` , `images` , `area` , `address` , `x` , `y` , `avg_price` , `sold` , `comments` , `score` , `open_hours` , `create_time` , `update_time` FROM `tb_shop` WHERE `id` = ?",
+        "count": 14
+      }
+    ]
+  },
+  "upgraded": {
+    "shop_detail_selects": 14,
+    "statements": [
+      {
+        "normalized_sql": "SELECT `id` , NAME , `type_id` , `images` , `area` , `address` , `x` , `y` , `avg_price` , `sold` , `comments` , `score` , `open_hours` , `create_time` , `update_time` FROM `tb_shop` WHERE `id` = ?",
+        "count": 14
+      }
+    ]
+  }
+}

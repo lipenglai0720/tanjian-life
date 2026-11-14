@@ -1,0 +1,67 @@
+{
+  "file": "seckill.jtl.gz",
+  "measurement_seconds": 11.208,
+  "observed_threads": 1000,
+  "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+  "samplers": {
+    "auth.login": {
+      "samples": 1000,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 89.222,
+      "avg_ms": 5.791,
+      "p50_ms": 3,
+      "p95_ms": 6,
+      "p99_ms": 127
+    },
+    "seckill.submit": {
+      "samples": 1000,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 89.222,
+      "avg_ms": 238.364,
+      "p50_ms": 258,
+      "p95_ms": 384,
+      "p99_ms": 400
+    },
+    "seckill.poll": {
+      "samples": 323,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 28.819,
+      "avg_ms": 9.115,
+      "p50_ms": 7,
+      "p95_ms": 27,
+      "p99_ms": 33
+    },
+    "order.final": {
+      "samples": 100,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 8.922,
+      "avg_ms": 1.36,
+      "p50_ms": 0,
+      "p95_ms": 1,
+      "p99_ms": 48
+    }
+  },
+  "submission_outcomes": {
+    "ACCEPTED": 100,
+    "SOLD_OUT": 900
+  },
+  "terminal_outcomes": {
+    "CREATED": 100
+  },
+  "duplicate_accepted_ids": 0,
+  "successful_order_observed_end_to_end_ms": {
+    "samples": 100,
+    "p50": 942,
+    "p95": 1356,
+    "p99": 1370
+  },
+  "accepted_without_created": false,
+  "unexpected_failed_samples": 0,
+  "missing_outcome_columns": false,
+  "thread_count_matches": true,
+  "passed": true
+}

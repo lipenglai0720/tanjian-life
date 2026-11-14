@@ -18,9 +18,9 @@ import java.time.format.DateTimeFormatter;
 public class RedisIdWorker {
 
     /*
-     * 开始时间戳 2025-01-01 00:00:00 UTC
+     * ID 时间戳的固定起点，变更会影响历史 ID 解释
      */
-    private static final long BEGIN_TIMESTAMP = 1735689600L; // 2025-01-01 00:00:00 UTC in seconds
+    private static final long BEGIN_TIMESTAMP = 1735689600L;
     private static final int COUNT_BITS = 32; // 序列号位数
 
     @Autowired
@@ -44,12 +44,4 @@ public class RedisIdWorker {
         // 3.拼接并返回
         return timeStamp << COUNT_BITS | count;
     }
-
-
-    //获取当前时间戳，单位秒
-//    public static void main(String[] args) {
-//        LocalDateTime time = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
-//        Long second = time.toEpochSecond(java.time.ZoneOffset.UTC);
-//        System.out.println(second);
-//    }
 }

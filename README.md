@@ -4,7 +4,7 @@
 
 **tanjian-life · 店铺发现、内容互动、到店预约与 AI 创作**
 
-将用户的城市生活体验，与商家的内容创作、优惠和预约处理连接起来。
+围绕店铺查询、优惠券订单、到店预约与 AI 内容创作，实践 Java 后端的并发控制、异常恢复和缓存一致性。
 
 ![Java](https://img.shields.io/badge/Java-17-ED8B00)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.6-6DB33F?logo=springboot&logoColor=white)
@@ -12,7 +12,7 @@
 ![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
 [![Test](https://github.com/lipenglai0720/tanjian-life/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/lipenglai0720/tanjian-life/actions/workflows/test.yml)
 
-[快速开始](#快速开始) · [架构设计](docs/architecture.md) · [部署指南](docs/deployment.md) · [功能对照](frontend/FEATURE-COVERAGE.md) · [压测指南](performance/jmeter/README.md)
+[快速开始](#快速开始) · [架构设计](docs/architecture.md) · [部署指南](docs/deployment.md) · [功能对照](frontend/FEATURE-COVERAGE.md) · [压测指南](performance/jmeter/README.md) · [验证报告](performance/benchmarks/2026-11-14/REPORT.md) · [设计取舍](docs/reliability.md)
 
 </div>
 
@@ -20,9 +20,11 @@
 
 ## 项目介绍
 
-探见基于 Spring Boot 3、MySQL、Redis 与 Vue 2，实现店铺发现、探店笔记、用户互动、优惠券订单、到店预约和商家管理，并集成 LangChain4j AI 对话、场景化内容 Skills 与 MCP 公开目录工具。
+探见基于 Spring Boot 3、MySQL、Redis 与 Vue 2，实现店铺发现、探店笔记、用户互动、优惠券订单、到店预约和商家管理，并集成 LangChain4j AI 对话、场景化内容 Skills 与 MCP 目录及登录用户工具。
 
-前端采用无需构建的 Vue 页面与 nginx 反向代理，后端负责账号会话、业务权限、缓存与异步订单处理。仓库保留可复现的单元测试、前端模板验证和 JMeter 计划。
+前端采用无需构建的 Vue 页面与 nginx 反向代理。后端重点实现可恢复的异步订单、带持久事件的两级缓存失效，以及带用户鉴权的 AI 业务工具。仓库提供单元测试、真实 MySQL/Redis 集成测试和可重复运行的 JMeter 验证。
+
+项目由黑马点评学习案例迭代而来。本仓库的扩展与改造包括订单结果状态、有限重试与死信、库存核对、事务失效事件、多实例缓存验证、预约权限、AI Skills 和 MCP 身份上下文。具体边界和取舍见设计文档。
 
 ## 核心功能
 
@@ -33,9 +35,9 @@
 | 用户中心 | 手机验证码登录、个人资料、签到与订单查询 |
 | 到店预约 | 用户提交 / 取消，已授权商家确认 / 拒绝 |
 | 商家管理 | 绑定店铺的信息维护、普通优惠与限时优惠发布 |
-| 优惠券订单 | Lua 原子校验与预扣库存，Redis Stream 消费，幂等落库与结果查询 |
+| 优惠券订单 | Lua 原子校验与预扣库存，Redis Stream 消费、五次有限尝试、死信隔离、幂等落库、结果查询与安全重放 |
 | AI 工作台 | 探店笔记、评价总结、评价回复、优惠文案与短视频脚本；生成记录可查询 |
-| AI 对话与 MCP | 按用户隔离对话会话，通过 MCP 暴露公开店铺目录查询 |
+| AI 对话与 MCP | 按用户隔离对话会话，MCP 提供匿名目录工具及需登录的个人订单、预约和技能调用 |
 
 <details>
 <summary>查看 AI 工作台预览</summary>
@@ -65,7 +67,7 @@ flowchart LR
     Catalog --> API
 ```
 
-订单处理通过 Redis 原子校验、消费组恢复、Redisson 锁和数据库事务完成；具体实现与源码入口见 [架构设计](docs/architecture.md)。
+订单受理与最终结果分开，失败达到上限后保留预占并进入核对。店铺更新与失效事件同事务提交，Redis 通知配合 L1 五秒过期兜底。具体实现、故障边界与源码入口见 [架构设计](docs/architecture.md) 和 [可靠性设计](docs/reliability.md)。
 
 ## 技术栈
 
@@ -79,7 +81,7 @@ flowchart LR
 
 ## 快速开始
 
-需要 JDK 17、Maven、MySQL 8 与 Redis。Windows 可直接使用仓库内的 nginx 程序；其他系统可使用自行安装的 nginx 并调整静态资源目录。
+需要 JDK 17、MySQL 8 与 Redis；Maven Wrapper 首次运行自动下载固定的 Maven 3.9.9。Windows 可直接使用仓库内的 nginx 程序；其他系统可使用自行安装的 nginx 并调整静态资源目录。
 
 ```bash
 git clone https://github.com/lipenglai0720/tanjian-life.git
@@ -92,11 +94,11 @@ cd tanjian-life
 Copy-Item backend/src/main/resources/application.example.yml backend/src/main/resources/application.yml
 ```
 
-配置数据库、Redis、模型地址与上传目录。密码和模型密钥可通过 `DB_PASSWORD`、`REDIS_PASSWORD`、`DEEPSEEK_API_KEY` 环境变量提供；`application.yml` 已被 Git 忽略。Linux / macOS 可用 `cp` 复制配置。
+配置数据库、Redis 与上传目录。数据库密码可通过 `DB_PASSWORD`、`REDIS_PASSWORD` 环境变量提供。示例配置默认禁用外部模型访问，AI 技能会返回明确标注的本地编辑模板。启用真实模型时设置 `AI_BASE_URL`、`DEEPSEEK_API_KEY` 和 `AI_MODEL`。`application.yml` 已被 Git 忽略。Linux / macOS 可用 `cp` 复制配置。
 
 **2. 初始化数据库**
 
-在新建的空 `hmdp` 数据库中导入 `db.sql`，再按部署指南执行 AI、预约和索引的增量脚本。`db.sql` 包含删表语句，只用于空库初始化。
+在新建的空 `hmdp` 数据库中导入 `db.sql`，再按部署指南执行 AI、预约、索引和可靠性增量脚本。`db.sql` 包含删表语句，只用于空库初始化。
 
 ```sql
 CREATE DATABASE hmdp CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -107,10 +109,11 @@ CREATE DATABASE hmdp CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 **3. 启动后端**
 
 ```bash
-mvn -f backend/pom.xml spring-boot:run
+cd backend
+.\mvnw.cmd spring-boot:run
 ```
 
-也可在 IDEA 中运行 `TanjianApplication`。后端默认监听 8081。
+也可在 IDEA 中运行 `TanjianApplication`。后端默认监听 8081。Linux / macOS 在 backend 下执行 `./mvnw spring-boot:run`。管理端口默认仅绑定 `127.0.0.1:9081`，通过 `/actuator/health` 和 `/actuator/tanjian` 查看健康与项目计数器。
 
 **4. 启动前端**
 
@@ -128,13 +131,13 @@ Start-Process -FilePath ".\nginx.exe" -WorkingDirectory (Get-Location).Path -Win
 ## 测试与性能验证
 
 ```bash
-mvn -f backend/pom.xml test
+backend\mvnw.cmd -f backend/pom.xml test
 node scripts/verify_frontend.cjs
 ```
 
-后端单元测试与前端模板检查已接入 GitHub Actions。需要真实数据库、Redis 或批量写入的手工测试默认不执行，只有显式设置 `TANJIAN_RUN_MANUAL_TESTS=true` 才会开启。
+后端单元测试、真实 MySQL/Redis 集成测试与前端模板检查已接入 GitHub Actions。需要真实数据库、Redis 或批量写入的手工测试默认不执行，只有显式设置 `TANJIAN_RUN_MANUAL_TESTS=true` 才会开启。
 
-JMeter 提供登录、混合读取、秒杀、重复领取、普通券领取和预约六套计划，使用独立测试环境。运行方式见 [压测指南](performance/jmeter/README.md)，已有小规模验证见 [冒烟记录](performance/jmeter/SMOKE-RESULTS.md)。该记录用于验证流程，不代表系统最大吞吐量。
+JMeter 提供登录、混合读取、秒杀、重复领取、普通券领取和预约六套计划，使用独立测试环境。运行方式见 [压测指南](performance/jmeter/README.md)，历史小规模验证见 [冒烟记录](performance/jmeter/SMOKE-RESULTS.md)，本轮对比与故障验证见 [验证报告](performance/benchmarks/2026-11-14/REPORT.md)。所有结果均为标明环境的本机实验，不代表线上业务容量。
 
 ## 项目结构
 

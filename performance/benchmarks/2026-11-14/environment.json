@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-14",
+  "timezone": "Asia/Shanghai",
+  "os": "Windows 11 x64",
+  "cpu": "Intel Core Ultra 7 270K Plus",
+  "logical_processors": 24,
+  "ram_gib": 23.5,
+  "jdk": "17.0.13",
+  "mysql": "8.0.34",
+  "redis": "8.10.2",
+  "jmeter": "5.6.3",
+  "application_heap_mib": 512,
+  "read_jmeter_heap_mib": 512,
+  "model_calls": false
+}

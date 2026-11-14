@@ -1,0 +1,1381 @@
+{
+  "label": "e4ef49d",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.12.14",
+  "warmup_seconds": 30,
+  "measured_seconds": 60,
+  "ramp_seconds": 1,
+  "think_ms": 100,
+  "jvm": "-Xms128m -Xmx512m",
+  "model_calls": false,
+  "runs": [
+    {
+      "file": "read-20-r1.jtl.gz",
+      "measurement_seconds": 59.891,
+      "observed_threads": 20,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.skills_catalog": {
+          "samples": 1238,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.671,
+          "avg_ms": 1.417,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.shop_type": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.704,
+          "avg_ms": 2.046,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 3
+        },
+        "read.shop_detail": {
+          "samples": 1223,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.42,
+          "avg_ms": 1.047,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.nearby": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.704,
+          "avg_ms": 1.79,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 3
+        },
+        "read.blog_hot": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.704,
+          "avg_ms": 3.79,
+          "p50_ms": 4,
+          "p95_ms": 5,
+          "p99_ms": 5
+        },
+        "read.shop_blogs": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.704,
+          "avg_ms": 1.853,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 3
+        },
+        "read.vouchers": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.704,
+          "avg_ms": 1.206,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.my_orders": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.704,
+          "avg_ms": 1.719,
+          "p50_ms": 2,
+          "p95_ms": 2,
+          "p99_ms": 3
+        },
+        "read.my_reservations": {
+          "samples": 1239,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.688,
+          "avg_ms": 1.76,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 3
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 20,
+      "repetition": 1
+    },
+    {
+      "file": "read-20-r2.jtl.gz",
+      "measurement_seconds": 59.915,
+      "observed_threads": 20,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.shop_detail": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.696,
+          "avg_ms": 0.89,
+          "p50_ms": 1,
+          "p95_ms": 1,
+          "p99_ms": 2
+        },
+        "read.shop_blogs": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.696,
+          "avg_ms": 1.39,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.nearby": {
+          "samples": 1239,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.679,
+          "avg_ms": 1.445,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.shop_type": {
+          "samples": 1239,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.679,
+          "avg_ms": 1.709,
+          "p50_ms": 2,
+          "p95_ms": 2,
+          "p99_ms": 3
+        },
+        "read.blog_hot": {
+          "samples": 1239,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.679,
+          "avg_ms": 3.113,
+          "p50_ms": 3,
+          "p95_ms": 4,
+          "p99_ms": 5
+        },
+        "read.vouchers": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.696,
+          "avg_ms": 1.01,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.my_orders": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.696,
+          "avg_ms": 1.374,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.my_reservations": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.696,
+          "avg_ms": 1.36,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.skills_catalog": {
+          "samples": 1239,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.679,
+          "avg_ms": 1.178,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 20,
+      "repetition": 2
+    },
+    {
+      "file": "read-20-r3.jtl.gz",
+      "measurement_seconds": 59.908,
+      "observed_threads": 20,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.nearby": {
+          "samples": 1239,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.682,
+          "avg_ms": 1.518,
+          "p50_ms": 2,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.blog_hot": {
+          "samples": 1228,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.498,
+          "avg_ms": 3.082,
+          "p50_ms": 3,
+          "p95_ms": 4,
+          "p99_ms": 4
+        },
+        "read.shop_blogs": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.698,
+          "avg_ms": 1.436,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.shop_detail": {
+          "samples": 1238,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.665,
+          "avg_ms": 0.931,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.shop_type": {
+          "samples": 1238,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.665,
+          "avg_ms": 1.733,
+          "p50_ms": 2,
+          "p95_ms": 2,
+          "p99_ms": 3
+        },
+        "read.vouchers": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.698,
+          "avg_ms": 1.035,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.my_orders": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.698,
+          "avg_ms": 1.435,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.my_reservations": {
+          "samples": 1240,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.698,
+          "avg_ms": 1.435,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 3
+        },
+        "read.skills_catalog": {
+          "samples": 1239,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 20.682,
+          "avg_ms": 1.207,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 20,
+      "repetition": 3
+    },
+    {
+      "file": "read-50-r1.jtl.gz",
+      "measurement_seconds": 59.912,
+      "observed_threads": 50,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.shop_detail": {
+          "samples": 3095,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.659,
+          "avg_ms": 0.774,
+          "p50_ms": 1,
+          "p95_ms": 1,
+          "p99_ms": 2
+        },
+        "read.blog_hot": {
+          "samples": 3085,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.492,
+          "avg_ms": 3.053,
+          "p50_ms": 3,
+          "p95_ms": 4,
+          "p99_ms": 4
+        },
+        "read.nearby": {
+          "samples": 3075,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.325,
+          "avg_ms": 1.339,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.shop_type": {
+          "samples": 3095,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.659,
+          "avg_ms": 1.529,
+          "p50_ms": 2,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.shop_blogs": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.743,
+          "avg_ms": 1.348,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.vouchers": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.743,
+          "avg_ms": 0.932,
+          "p50_ms": 1,
+          "p95_ms": 1,
+          "p99_ms": 2
+        },
+        "read.my_orders": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.743,
+          "avg_ms": 1.306,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.my_reservations": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.743,
+          "avg_ms": 1.365,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 3
+        },
+        "read.skills_catalog": {
+          "samples": 3098,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.709,
+          "avg_ms": 1.048,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 50,
+      "repetition": 1
+    },
+    {
+      "file": "read-50-r2.jtl.gz",
+      "measurement_seconds": 59.903,
+      "observed_threads": 50,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.shop_detail": {
+          "samples": 3096,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.684,
+          "avg_ms": 0.713,
+          "p50_ms": 1,
+          "p95_ms": 1,
+          "p99_ms": 1
+        },
+        "read.shop_type": {
+          "samples": 3095,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.667,
+          "avg_ms": 1.47,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.blog_hot": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.75,
+          "avg_ms": 2.95,
+          "p50_ms": 3,
+          "p95_ms": 4,
+          "p99_ms": 4
+        },
+        "read.nearby": {
+          "samples": 3064,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.149,
+          "avg_ms": 1.237,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.shop_blogs": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.75,
+          "avg_ms": 1.27,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.vouchers": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.75,
+          "avg_ms": 0.897,
+          "p50_ms": 1,
+          "p95_ms": 1,
+          "p99_ms": 2
+        },
+        "read.my_orders": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.75,
+          "avg_ms": 1.212,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.my_reservations": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.75,
+          "avg_ms": 1.218,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.skills_catalog": {
+          "samples": 3098,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.717,
+          "avg_ms": 0.985,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 50,
+      "repetition": 2
+    },
+    {
+      "file": "read-50-r3.jtl.gz",
+      "measurement_seconds": 59.919,
+      "observed_threads": 50,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.shop_detail": {
+          "samples": 3096,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.67,
+          "avg_ms": 0.715,
+          "p50_ms": 1,
+          "p95_ms": 1,
+          "p99_ms": 2
+        },
+        "read.shop_type": {
+          "samples": 3096,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.67,
+          "avg_ms": 1.443,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.blog_hot": {
+          "samples": 3089,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.553,
+          "avg_ms": 2.904,
+          "p50_ms": 3,
+          "p95_ms": 4,
+          "p99_ms": 4
+        },
+        "read.nearby": {
+          "samples": 3080,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.403,
+          "avg_ms": 1.208,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.shop_blogs": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.737,
+          "avg_ms": 1.239,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.vouchers": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.737,
+          "avg_ms": 0.879,
+          "p50_ms": 1,
+          "p95_ms": 1,
+          "p99_ms": 2
+        },
+        "read.my_orders": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.737,
+          "avg_ms": 1.197,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.my_reservations": {
+          "samples": 3100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.737,
+          "avg_ms": 1.209,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.skills_catalog": {
+          "samples": 3098,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 51.703,
+          "avg_ms": 0.97,
+          "p50_ms": 1,
+          "p95_ms": 1,
+          "p99_ms": 2
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 50,
+      "repetition": 3
+    },
+    {
+      "file": "read-100-r1.jtl.gz",
+      "measurement_seconds": 59.857,
+      "observed_threads": 100,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.shop_detail": {
+          "samples": 6162,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.945,
+          "avg_ms": 0.855,
+          "p50_ms": 1,
+          "p95_ms": 1,
+          "p99_ms": 2
+        },
+        "read.shop_type": {
+          "samples": 6177,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 103.196,
+          "avg_ms": 1.744,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 4
+        },
+        "read.my_reservations": {
+          "samples": 6187,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 103.363,
+          "avg_ms": 1.537,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 4
+        },
+        "read.skills_catalog": {
+          "samples": 6176,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 103.179,
+          "avg_ms": 1.17,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.nearby": {
+          "samples": 6200,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 103.58,
+          "avg_ms": 1.629,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 4
+        },
+        "read.blog_hot": {
+          "samples": 6200,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 103.58,
+          "avg_ms": 3.516,
+          "p50_ms": 3,
+          "p95_ms": 5,
+          "p99_ms": 6
+        },
+        "read.shop_blogs": {
+          "samples": 6200,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 103.58,
+          "avg_ms": 1.554,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 3
+        },
+        "read.vouchers": {
+          "samples": 6163,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.962,
+          "avg_ms": 1.105,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.my_orders": {
+          "samples": 6158,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.879,
+          "avg_ms": 1.54,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 3
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 100,
+      "repetition": 1
+    },
+    {
+      "file": "read-100-r2.jtl.gz",
+      "measurement_seconds": 59.834,
+      "observed_threads": 100,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.my_reservations": {
+          "samples": 6111,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.133,
+          "avg_ms": 1.925,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 15
+        },
+        "read.shop_type": {
+          "samples": 6176,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 103.219,
+          "avg_ms": 1.955,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 5
+        },
+        "read.nearby": {
+          "samples": 6186,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 103.386,
+          "avg_ms": 1.8,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 6
+        },
+        "read.shop_detail": {
+          "samples": 6166,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 103.052,
+          "avg_ms": 0.992,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 3
+        },
+        "read.skills_catalog": {
+          "samples": 6158,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.918,
+          "avg_ms": 1.427,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 5
+        },
+        "read.blog_hot": {
+          "samples": 6143,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.667,
+          "avg_ms": 4.266,
+          "p50_ms": 4,
+          "p95_ms": 5,
+          "p99_ms": 18
+        },
+        "read.shop_blogs": {
+          "samples": 6136,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.55,
+          "avg_ms": 1.927,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 14
+        },
+        "read.vouchers": {
+          "samples": 6133,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.5,
+          "avg_ms": 1.353,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 6
+        },
+        "read.my_orders": {
+          "samples": 6115,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.199,
+          "avg_ms": 1.856,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 8
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 100,
+      "repetition": 2
+    },
+    {
+      "file": "read-100-r3.jtl.gz",
+      "measurement_seconds": 59.87,
+      "observed_threads": 100,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.skills_catalog": {
+          "samples": 6114,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.121,
+          "avg_ms": 1.66,
+          "p50_ms": 2,
+          "p95_ms": 2,
+          "p99_ms": 3
+        },
+        "read.my_orders": {
+          "samples": 6138,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.522,
+          "avg_ms": 2.008,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 4
+        },
+        "read.vouchers": {
+          "samples": 6129,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 102.372,
+          "avg_ms": 1.55,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 3
+        },
+        "read.shop_detail": {
+          "samples": 6106,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 101.988,
+          "avg_ms": 1.178,
+          "p50_ms": 1,
+          "p95_ms": 2,
+          "p99_ms": 2
+        },
+        "read.my_reservations": {
+          "samples": 6100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 101.887,
+          "avg_ms": 2.025,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 6
+        },
+        "read.shop_type": {
+          "samples": 6100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 101.887,
+          "avg_ms": 2.152,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 3
+        },
+        "read.nearby": {
+          "samples": 6100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 101.887,
+          "avg_ms": 1.947,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 4
+        },
+        "read.blog_hot": {
+          "samples": 6100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 101.887,
+          "avg_ms": 4.398,
+          "p50_ms": 4,
+          "p95_ms": 6,
+          "p99_ms": 7
+        },
+        "read.shop_blogs": {
+          "samples": 6100,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 101.887,
+          "avg_ms": 2.066,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 5
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 100,
+      "repetition": 3
+    },
+    {
+      "file": "read-200-r1.jtl.gz",
+      "measurement_seconds": 59.904,
+      "observed_threads": 200,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.vouchers": {
+          "samples": 12157,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 202.941,
+          "avg_ms": 2.291,
+          "p50_ms": 2,
+          "p95_ms": 4,
+          "p99_ms": 7
+        },
+        "read.my_reservations": {
+          "samples": 12138,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 202.624,
+          "avg_ms": 3.158,
+          "p50_ms": 3,
+          "p95_ms": 6,
+          "p99_ms": 11
+        },
+        "read.blog_hot": {
+          "samples": 12163,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 203.042,
+          "avg_ms": 7.931,
+          "p50_ms": 7,
+          "p95_ms": 14,
+          "p99_ms": 18
+        },
+        "read.skills_catalog": {
+          "samples": 12133,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 202.541,
+          "avg_ms": 2.402,
+          "p50_ms": 2,
+          "p95_ms": 4,
+          "p99_ms": 7
+        },
+        "read.my_orders": {
+          "samples": 12129,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 202.474,
+          "avg_ms": 3.3,
+          "p50_ms": 3,
+          "p95_ms": 7,
+          "p99_ms": 15
+        },
+        "read.shop_blogs": {
+          "samples": 12194,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 203.559,
+          "avg_ms": 3.392,
+          "p50_ms": 3,
+          "p95_ms": 7,
+          "p99_ms": 15
+        },
+        "read.shop_detail": {
+          "samples": 12087,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 201.773,
+          "avg_ms": 1.639,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 4
+        },
+        "read.shop_type": {
+          "samples": 12072,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 201.522,
+          "avg_ms": 3.422,
+          "p50_ms": 3,
+          "p95_ms": 7,
+          "p99_ms": 9
+        },
+        "read.nearby": {
+          "samples": 12054,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 201.222,
+          "avg_ms": 3.058,
+          "p50_ms": 3,
+          "p95_ms": 6,
+          "p99_ms": 9
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 200,
+      "repetition": 1
+    },
+    {
+      "file": "read-200-r2.jtl.gz",
+      "measurement_seconds": 59.9,
+      "observed_threads": 200,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.vouchers": {
+          "samples": 12186,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 203.439,
+          "avg_ms": 2.102,
+          "p50_ms": 2,
+          "p95_ms": 4,
+          "p99_ms": 7
+        },
+        "read.shop_blogs": {
+          "samples": 12214,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 203.907,
+          "avg_ms": 3.103,
+          "p50_ms": 3,
+          "p95_ms": 6,
+          "p99_ms": 10
+        },
+        "read.my_reservations": {
+          "samples": 12197,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 203.623,
+          "avg_ms": 2.869,
+          "p50_ms": 2,
+          "p95_ms": 6,
+          "p99_ms": 8
+        },
+        "read.blog_hot": {
+          "samples": 12151,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 202.855,
+          "avg_ms": 6.221,
+          "p50_ms": 5,
+          "p95_ms": 12,
+          "p99_ms": 16
+        },
+        "read.skills_catalog": {
+          "samples": 12206,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 203.773,
+          "avg_ms": 2.263,
+          "p50_ms": 2,
+          "p95_ms": 4,
+          "p99_ms": 7
+        },
+        "read.my_orders": {
+          "samples": 12189,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 203.489,
+          "avg_ms": 2.882,
+          "p50_ms": 2,
+          "p95_ms": 6,
+          "p99_ms": 8
+        },
+        "read.shop_detail": {
+          "samples": 12187,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 203.456,
+          "avg_ms": 1.54,
+          "p50_ms": 1,
+          "p95_ms": 3,
+          "p99_ms": 4
+        },
+        "read.shop_type": {
+          "samples": 12157,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 202.955,
+          "avg_ms": 3.063,
+          "p50_ms": 3,
+          "p95_ms": 5,
+          "p99_ms": 8
+        },
+        "read.nearby": {
+          "samples": 12116,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 202.27,
+          "avg_ms": 2.863,
+          "p50_ms": 2,
+          "p95_ms": 6,
+          "p99_ms": 7
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 200,
+      "repetition": 2
+    },
+    {
+      "file": "read-200-r3.jtl.gz",
+      "measurement_seconds": 59.888,
+      "observed_threads": 200,
+      "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+      "samplers": {
+        "read.vouchers": {
+          "samples": 12128,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 202.511,
+          "avg_ms": 2.337,
+          "p50_ms": 2,
+          "p95_ms": 4,
+          "p99_ms": 6
+        },
+        "read.my_reservations": {
+          "samples": 12067,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 201.493,
+          "avg_ms": 3.315,
+          "p50_ms": 3,
+          "p95_ms": 6,
+          "p99_ms": 15
+        },
+        "read.blog_hot": {
+          "samples": 12155,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 202.962,
+          "avg_ms": 10.067,
+          "p50_ms": 10,
+          "p95_ms": 17,
+          "p99_ms": 20
+        },
+        "read.shop_blogs": {
+          "samples": 12164,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 203.112,
+          "avg_ms": 3.617,
+          "p50_ms": 3,
+          "p95_ms": 7,
+          "p99_ms": 15
+        },
+        "read.my_orders": {
+          "samples": 12079,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 201.693,
+          "avg_ms": 3.304,
+          "p50_ms": 3,
+          "p95_ms": 6,
+          "p99_ms": 15
+        },
+        "read.skills_catalog": {
+          "samples": 12057,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 201.326,
+          "avg_ms": 2.52,
+          "p50_ms": 2,
+          "p95_ms": 4,
+          "p99_ms": 6
+        },
+        "read.shop_detail": {
+          "samples": 12052,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 201.242,
+          "avg_ms": 1.779,
+          "p50_ms": 2,
+          "p95_ms": 3,
+          "p99_ms": 4
+        },
+        "read.shop_type": {
+          "samples": 12051,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 201.226,
+          "avg_ms": 3.566,
+          "p50_ms": 3,
+          "p95_ms": 6,
+          "p99_ms": 12
+        },
+        "read.nearby": {
+          "samples": 12051,
+          "errors": 0,
+          "error_percent": 0.0,
+          "requests_per_second_over_measured_window": 201.226,
+          "avg_ms": 3.166,
+          "p50_ms": 3,
+          "p95_ms": 6,
+          "p99_ms": 8
+        }
+      },
+      "submission_outcomes": {},
+      "terminal_outcomes": {},
+      "duplicate_accepted_ids": 0,
+      "successful_order_observed_end_to_end_ms": {
+        "samples": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "accepted_without_created": false,
+      "unexpected_failed_samples": 0,
+      "missing_outcome_columns": false,
+      "thread_count_matches": true,
+      "passed": true,
+      "threads": 200,
+      "repetition": 3
+    }
+  ]
+}

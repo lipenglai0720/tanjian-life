@@ -1,0 +1,82 @@
+{
+  "cases": [
+    {
+      "case": "1000 distinct users / 100 coupons",
+      "passed": true,
+      "outcomes": {
+        "ACCEPTED": 100,
+        "SOLD_OUT": 900
+      },
+      "orders": 100,
+      "duplicate_users": 0,
+      "stock": 0,
+      "observed_end_to_end_ms": {
+        "samples": 100,
+        "p50": 942,
+        "p95": 1356,
+        "p99": 1370
+      }
+    },
+    {
+      "case": "100 duplicate submissions",
+      "passed": true,
+      "orders": 1,
+      "stock": 99
+    },
+    {
+      "case": "ordinary claim",
+      "passed": true,
+      "orders": 100
+    },
+    {
+      "case": "reservation create / cancel",
+      "passed": true,
+      "cancelled": 50,
+      "active": 0
+    },
+    {
+      "case": "accepted order recovered by another JVM",
+      "passed": true,
+      "orders": 1
+    },
+    {
+      "case": "two JVM broadcast invalidation",
+      "passed": true,
+      "visible_ms": 78.0
+    },
+    {
+      "case": "missed notification / L1 TTL fallback",
+      "passed": true,
+      "visible_ms": 5047.0,
+      "l1_max_ms": 5000
+    },
+    {
+      "case": "subscriber reconnect clears L1",
+      "passed": true,
+      "reconnected": true
+    },
+    {
+      "case": "two JVM / 200 cold hot-key reads",
+      "passed": true,
+      "database_loads": 1
+    },
+    {
+      "case": "persisted invalidation event recovered after JVM restart",
+      "passed": true
+    },
+    {
+      "case": "dry-run / safe replay / repeated replay refusal",
+      "passed": true,
+      "orders": 1
+    },
+    {
+      "case": "management endpoint",
+      "passed": true,
+      "binding": "127.0.0.1",
+      "ports": [
+        19081,
+        19082
+      ]
+    }
+  ]
+}

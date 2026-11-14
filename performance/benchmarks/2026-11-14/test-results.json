@@ -1,0 +1,126 @@
+{
+  "unit": {
+    "tests": 37,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2,
+    "passed": 35,
+    "suites": [
+      {
+        "suite": "com.tanjian.controller.ChatControllerHttpTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.controller.ChatControllerTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.controller.ShopControllerTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.controller.VoucherControllerTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.interceptor.LoginInterceptorTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.mcp.config.McpServerConfigTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.service.AiSkillServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.service.BlogCommentsServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.service.CacheClientTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.service.RedisChatMemoryStoreTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.service.ReservationServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.service.ToolUserContextTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.service.VoucherOrderProcessorTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.tanjian.TanjianApplicationTests",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      }
+    ]
+  },
+  "integration": {
+    "tests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 10,
+    "suites": [
+      {
+        "suite": "com.tanjian.service.ReliabilityIT",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "configuration_independence_check": "clean verify passed after removing the ignored application.yml"
+}

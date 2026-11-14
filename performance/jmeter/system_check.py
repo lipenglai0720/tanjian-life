@@ -42,15 +42,20 @@ def launch(meta,api,consumer=True,notifications=True):
         command.extend(['--langchain4j.open-ai.'+model+'.base-url=http://127.0.0.1:1/v1','--langchain4j.open-ai.'+model+'.api-key=local-perf-disabled',
             '--langchain4j.open-ai.'+model+'.log-requests=false','--langchain4j.open-ai.'+model+'.log-responses=false'])
     process=manage.start(command,manage.ROOT/'backend',folder/('node-'+str(api)+'.log'),env)
-    wait_for(lambda:http(api,'/shop-type/list').get('success'),60)
-    wait_for(lambda:http(api+1000,'/actuator/health').get('status')=='UP',30)
-    return process.pid
+    try:
+        wait_for(lambda:http(api,'/shop-type/list').get('success'),60)
+        wait_for(lambda:http(api+1000,'/actuator/health').get('status')=='UP',30)
+        return process.pid
+    except Exception:
+        manage.stop_pid(process.pid,meta['database']);raise
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--jmeter',type=Path,required=True);parser.add_argument('--output',type=Path,required=True)
-    args=parser.parse_args();output=args.output.resolve();output.mkdir(parents=True,exist_ok=True)
+    parser.add_argument('--redis-server',default=manage.REDIS_DEFAULT);parser.add_argument('--mysql',default=manage.MYSQL_DEFAULT);parser.add_argument('--java',default=manage.JAVA_DEFAULT)
+    args=parser.parse_args();manage.JAVA_DEFAULT=args.java
+    output=args.output.resolve();output.mkdir(parents=True,exist_ok=True)
     manage.STATE=manage.BASE/'.runtime'/('system-check-'+time.strftime('%Y%m%d_%H%M%S'));manage.CURRENT=manage.STATE/'current.json'
     meta=None;extra=[];results=[]
     def record(name,**fields):
@@ -76,8 +81,8 @@ def main():
         (output/(case+'-summary.json')).write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
         return result
     try:
-        fixture=argparse.Namespace(users=1000,stock=100,mysql=None,mysql_user='root',mysql_port=3306,redis_server=manage.REDIS_DEFAULT,
-            redis_port=16379,api_port=18081,java=None,jar=None,no_backend=False)
+        fixture=argparse.Namespace(users=1000,stock=100,mysql=args.mysql,mysql_user='root',mysql_port=3306,redis_server=args.redis_server,
+            redis_port=16379,api_port=18081,java=args.java,jar=None,no_backend=False)
         manage.prepare(fixture);meta=manage.state()
         print('Running 1000-user seckill burst',flush=True)
         result=run_plan('seckill',1000)

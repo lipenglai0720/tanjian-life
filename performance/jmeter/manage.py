@@ -6,9 +6,9 @@ BASE=Path(__file__).resolve().parent
 STATE=BASE/".runtime"
 CURRENT=STATE/"current.json"
 NO_WINDOW=getattr(subprocess,"CREATE_NO_WINDOW",0)
-MYSQL_DEFAULT=r"D:\biyeshejixuexi\e_software\mysql-8.0.34-winx64\bin\mysql.exe"
-REDIS_DEFAULT=r"D:\Redis\Redis-8.10.2-Windows-x64-msys2\redis-server.exe"
-JAVA_DEFAULT=r"D:\biyeshejixuexi\e_software\Java_jdk\jdk-17.0.13\bin\java.exe"
+MYSQL_DEFAULT=shutil.which("mysql") or "mysql"
+REDIS_DEFAULT=os.environ.get("TANJIAN_REDIS_SERVER") or shutil.which("redis-server") or "redis-server"
+JAVA_DEFAULT=shutil.which("java") or "java"
 FIELDS=["user_id","phone","code","shop_id","type_id","x","y","voucher_id","reservation_time"]
 PASSWORD=None
 

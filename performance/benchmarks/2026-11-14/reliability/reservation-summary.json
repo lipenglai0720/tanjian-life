@@ -1,0 +1,52 @@
+{
+  "file": "reservation.jtl.gz",
+  "measurement_seconds": 9.748,
+  "observed_threads": 50,
+  "percentile_method": "nearest-rank; HTML dashboard estimators may differ",
+  "samplers": {
+    "auth.login": {
+      "samples": 50,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 5.129,
+      "avg_ms": 3.42,
+      "p50_ms": 3,
+      "p95_ms": 4,
+      "p99_ms": 18
+    },
+    "reservation.create": {
+      "samples": 50,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 5.129,
+      "avg_ms": 5.48,
+      "p50_ms": 5,
+      "p95_ms": 13,
+      "p99_ms": 15
+    },
+    "reservation.cancel": {
+      "samples": 50,
+      "errors": 0,
+      "error_percent": 0.0,
+      "requests_per_second_over_measured_window": 5.129,
+      "avg_ms": 4.64,
+      "p50_ms": 4,
+      "p95_ms": 10,
+      "p99_ms": 12
+    }
+  },
+  "submission_outcomes": {},
+  "terminal_outcomes": {},
+  "duplicate_accepted_ids": 0,
+  "successful_order_observed_end_to_end_ms": {
+    "samples": 0,
+    "p50": null,
+    "p95": null,
+    "p99": null
+  },
+  "accepted_without_created": false,
+  "unexpected_failed_samples": 0,
+  "missing_outcome_columns": false,
+  "thread_count_matches": true,
+  "passed": true
+}
